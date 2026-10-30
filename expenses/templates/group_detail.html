@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="{% url 'home' %}">Back to my groups</a></p>
+<h2>{{ group.name }}</h2>
+
+<h3>Expenses</h3>
+<ul>
+  {% for expense in expenses %}
+    <li>{{ expense.description }}: {{ expense.amount }} {% if expense.currency %}{{ expense.currency.code }}{% else %}EUR{% endif %}, paid by {{ expense.payer.username }}</li>
+  {% empty %}
+    <li>No expenses yet.</li>
+  {% endfor %}
+</ul>
+
+<h3>Summary (in euros)</h3>
+<table border="1" cellpadding="5">
+  <tr><th>Member</th><th>Total paid</th><th>Balance</th></tr>
+  {% for row in rows %}
+    <tr>
+      <td>{{ row.user.username }}</td>
+      <td>{{ row.paid|floatformat:2 }}</td>
+      <td>{{ row.balance|floatformat:2 }}</td>
+    </tr>
+  {% endfor %}
+</table>
+<p>A positive balance means the person gets money back. A negative one means they have to pay.</p>
+
+<h3>Who owes whom</h3>
+<ul>
+  {% for debtor, creditor, amount in payments %}
+    <li>{{ debtor.username }} owes {{ creditor.username }} {{ amount }} EUR</li>
+  {% empty %}
+    <li>Everybody is even.</li>
+  {% endfor %}
+</ul>
+{% endblock %}
