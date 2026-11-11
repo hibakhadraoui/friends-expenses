@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<p><a href="/groups/{{ group.id }}/">Back to {{ group.name }}</a></p>
+<p><a href="/group/?id={{ group.id }}">Back to {{ group.name }}</a></p>
 <h2>Add a currency to {{ group.name }}</h2>
 {% if error %}
   <p>{{ error }}</p>
 {% endif %}
-<form action="/groups/{{ group.id }}/currency/new/" method="get">
+<form action="/currency/" method="get">
+  <input type="hidden" name="id" value="{{ group.id }}"></input>
   <p>Currency code (for example USD): <input type="text" name="code"></input></p>
   <p>Rate (1 unit = how many euros, for example 0.92): <input type="text" name="rate"></input></p>
   <p><input type="submit" value="Add currency!"></input></p>

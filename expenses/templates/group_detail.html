@@ -4,9 +4,9 @@
 <h2>{{ group.name }}</h2>
 
 <p>
-  <a href="/groups/{{ group.id }}/expense/new/">Add an expense</a> |
-  <a href="/groups/{{ group.id }}/currency/new/">Add a currency</a> |
-  <a href="/groups/{{ group.id }}/member/new/">Add a member</a>
+  <a href="/expense/?id={{ group.id }}">Add an expense</a> |
+  <a href="/currency/?id={{ group.id }}">Add a currency</a> |
+  <a href="/member/?id={{ group.id }}">Add a member</a>
 </p>
 
 <h3>Members</h3>

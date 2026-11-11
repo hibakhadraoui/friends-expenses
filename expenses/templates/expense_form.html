@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<p><a href="/groups/{{ group.id }}/">Back to {{ group.name }}</a></p>
+<p><a href="/group/?id={{ group.id }}">Back to {{ group.name }}</a></p>
 <h2>Add an expense to {{ group.name }}</h2>
 {% if error %}
   <p>{{ error }}</p>
 {% endif %}
-<form action="/groups/{{ group.id }}/expense/new/" method="get">
+<form action="/expense/" method="get">
+  <input type="hidden" name="id" value="{{ group.id }}"></input>
   <p>Description: <input type="text" name="description"></input></p>
   <p>Amount: <input type="text" name="amount"></input></p>
   <p>Currency:

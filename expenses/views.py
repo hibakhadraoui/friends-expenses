@@ -17,6 +17,15 @@ def register(request):
     return render(request, 'register.html', {'form': form})
 
 
+def find_group(request):
+    # the group id comes from the address (?id=3); only groups of the user are searched
+    if 'id' in request.GET:
+        for group in FriendGroup.objects.filter(members=request.user):
+            if str(group.id) == request.GET['id']:
+                return group
+    return None
+
+
 @login_required
 def home(request):
     groups = FriendGroup.objects.filter(members=request.user)
@@ -24,11 +33,10 @@ def home(request):
 
 
 @login_required
-def group_detail(request, group_id):
-    groups = FriendGroup.objects.filter(id=group_id, members=request.user)
-    if len(groups) == 0:
+def group_detail(request):
+    group = find_group(request)
+    if group is None:
         return redirect('/')
-    group = groups[0]
 
     balances, paid = compute_balances(group)
     payments = compute_clearing(balances)
@@ -56,17 +64,16 @@ def create_group(request):
         newGroup = FriendGroup(name=name)
         newGroup.save()
         newGroup.members.add(request.user)  # the creator is a member
-        return redirect('/groups/' + str(newGroup.id) + '/')
+        return redirect('/group/?id=' + str(newGroup.id))
     else:
         return render(request, 'create_group.html')
 
 
 @login_required
-def add_member(request, group_id):
-    groups = FriendGroup.objects.filter(id=group_id, members=request.user)
-    if len(groups) == 0:
+def add_member(request):
+    group = find_group(request)
+    if group is None:
         return redirect('/')
-    group = groups[0]
 
     if 'username' in request.GET:
         users = User.objects.filter(username=request.GET['username'], is_superuser=False)
@@ -74,17 +81,16 @@ def add_member(request, group_id):
             template_values = {'group': group, 'error': 'No user with that name.'}
             return render(request, 'member_form.html', template_values)
         group.members.add(users[0])
-        return redirect('/groups/' + str(group.id) + '/')
+        return redirect('/group/?id=' + str(group.id))
     else:
         return render(request, 'member_form.html', {'group': group})
 
 
 @login_required
-def add_currency(request, group_id):
-    groups = FriendGroup.objects.filter(id=group_id, members=request.user)
-    if len(groups) == 0:
+def add_currency(request):
+    group = find_group(request)
+    if group is None:
         return redirect('/')
-    group = groups[0]
 
     if 'code' in request.GET and 'rate' in request.GET:
         code = request.GET['code']
@@ -104,17 +110,16 @@ def add_currency(request, group_id):
 
         newCurrency = Currency(group=group, code=code.upper(), rate_to_eur=rate)
         newCurrency.save()
-        return redirect('/groups/' + str(group.id) + '/')
+        return redirect('/group/?id=' + str(group.id))
     else:
         return render(request, 'currency_form.html', {'group': group})
 
 
 @login_required
-def add_expense(request, group_id):
-    groups = FriendGroup.objects.filter(id=group_id, members=request.user)
-    if len(groups) == 0:
+def add_expense(request):
+    group = find_group(request)
+    if group is None:
         return redirect('/')
-    group = groups[0]
     members = group.members.all()
     currencies = Currency.objects.filter(group=group)
     template_values = {'group': group, 'members': members, 'currencies': currencies}
@@ -168,6 +173,6 @@ def add_expense(request, group_id):
         newExpense.save()
         for person in beneficiaries:
             newExpense.beneficiaries.add(person)
-        return redirect('/groups/' + str(group.id) + '/')
+        return redirect('/group/?id=' + str(group.id))
     else:
         return render(request, 'expense_form.html', template_values)
