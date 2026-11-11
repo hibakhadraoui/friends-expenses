@@ -1,7 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
-<p><a href="{% url 'home' %}">Back to my groups</a></p>
+<p><a href="/">Back to my groups</a></p>
 <h2>{{ group.name }}</h2>
+
+<p>
+  <a href="/groups/{{ group.id }}/expense/new/">Add an expense</a> |
+  <a href="/groups/{{ group.id }}/currency/new/">Add a currency</a> |
+  <a href="/groups/{{ group.id }}/member/new/">Add a member</a>
+</p>
+
+<h3>Members</h3>
+<ul>
+  {% for member in members %}
+    <li>{{ member.username }}</li>
+  {% endfor %}
+</ul>
+
+<h3>Currencies</h3>
+<ul>
+  {% for currency in currencies %}
+    <li>1 {{ currency.code }} = {{ currency.rate_to_eur }} EUR</li>
+  {% empty %}
+    <li>No currency yet, everything is in euros.</li>
+  {% endfor %}
+</ul>
 
 <h3>Expenses</h3>
 <ul>

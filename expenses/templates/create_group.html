@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/">Back to my groups</a></p>
+<h2>Create a group</h2>
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+<form action="/groups/new/" method="get">
+  <p>Group name: <input type="text" name="name"></input></p>
+  <p><input type="submit" value="Create group!"></input></p>
+</form>
+<p>You can add the other members on the group page.</p>
+{% endblock %}

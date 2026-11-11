@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/groups/{{ group.id }}/">Back to {{ group.name }}</a></p>
+<h2>Add an expense to {{ group.name }}</h2>
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+<form action="/groups/{{ group.id }}/expense/new/" method="get">
+  <p>Description: <input type="text" name="description"></input></p>
+  <p>Amount: <input type="text" name="amount"></input></p>
+  <p>Currency:
+    <select name="currency">
+      <option value="">EUR (euros)</option>
+      {% for currency in currencies %}
+        <option value="{{ currency.id }}">{{ currency.code }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>Paid by:
+    <select name="payer">
+      {% for member in members %}
+        <option value="{{ member.id }}">{{ member.username }}</option>
+      {% endfor %}
+    </select>
+  </p>
+  <p>Paid for (tick everybody who benefited):</p>
+  <ul>
+    {% for member in members %}
+      <li><input type="checkbox" name="beneficiary_{{ member.id }}"></input> {{ member.username }}</li>
+    {% endfor %}
+  </ul>
+  <p><input type="submit" value="Add expense!"></input></p>
+</form>
+{% endblock %}

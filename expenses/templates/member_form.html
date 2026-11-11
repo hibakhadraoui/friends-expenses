@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<p><a href="/groups/{{ group.id }}/">Back to {{ group.name }}</a></p>
+<h2>Add a member to {{ group.name }}</h2>
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+<form action="/groups/{{ group.id }}/member/new/" method="get">
+  <p>Username (exactly as it was registered): <input type="text" name="username"></input></p>
+  <p><input type="submit" value="Add member!"></input></p>
+</form>
+{% endblock %}
